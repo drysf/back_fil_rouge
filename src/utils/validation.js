@@ -54,6 +54,69 @@ const validateLogin = ({ email, password }) => {
   return null; // Pas d'erreur
 };
 
+// Validation pour les préférences utilisateur
+const validatePreferences = (preferences) => {
+  const {
+    soundEnabled,
+    musicEnabled,
+    soundVolume,
+    musicVolume,
+    darkMode,
+    animationsEnabled,
+    language,
+    difficulty,
+    showHints,
+    autoSave,
+    notificationsEnabled,
+    parentalControl
+  } = preferences;
+
+  // Validation des booléens
+  const booleanFields = {
+    soundEnabled,
+    musicEnabled,
+    darkMode,
+    animationsEnabled,
+    showHints,
+    autoSave,
+    notificationsEnabled,
+    parentalControl
+  };
+
+  for (const [field, value] of Object.entries(booleanFields)) {
+    if (value !== undefined && typeof value !== 'boolean') {
+      return `${field} doit être un booléen`;
+    }
+  }
+
+  // Validation des volumes
+  if (soundVolume !== undefined) {
+    const vol = parseInt(soundVolume);
+    if (isNaN(vol) || vol < 0 || vol > 100) {
+      return 'Le volume des sons doit être entre 0 et 100';
+    }
+  }
+
+  if (musicVolume !== undefined) {
+    const vol = parseInt(musicVolume);
+    if (isNaN(vol) || vol < 0 || vol > 100) {
+      return 'Le volume de la musique doit être entre 0 et 100';
+    }
+  }
+
+  // Validation de la langue
+  if (language !== undefined && !['fr', 'en'].includes(language)) {
+    return 'La langue doit être "fr" ou "en"';
+  }
+
+  // Validation de la difficulté
+  if (difficulty !== undefined && !['easy', 'normal', 'hard', 'expert'].includes(difficulty)) {
+    return 'La difficulté doit être "easy", "normal", "hard" ou "expert"';
+  }
+
+  return null; // Pas d'erreur
+};
+
 // Validation pour les IDs MongoDB
 const validateObjectId = (id) => {
   const objectIdRegex = /^[0-9a-fA-F]{24}$/;
@@ -63,7 +126,7 @@ const validateObjectId = (id) => {
 // Sanitisation des données d'entrée
 const sanitizeInput = (input) => {
   if (typeof input !== 'string') return input;
-  
+
   return input
     .trim()
     .replace(/[<>]/g, '') // Supprimer les balises HTML basiques
@@ -93,6 +156,7 @@ const validatePagination = ({ page = 1, limit = 10 }) => {
 module.exports = {
   validateRegistration,
   validateLogin,
+  validatePreferences,
   validateObjectId,
   sanitizeInput,
   validatePagination

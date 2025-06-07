@@ -7,6 +7,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const friendRoutes = require('./routes/friends');
+const preferencesRoutes = require('./routes/preferences');
 
 // Connexion à la base de données
 require('./config/database');
@@ -21,6 +22,7 @@ app.use(cors());
 app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', friendRoutes);
+app.use('/api', preferencesRoutes);
 
 // Route de santé
 app.get('/api/health', (req, res) => {
